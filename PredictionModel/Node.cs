@@ -40,7 +40,7 @@ namespace PredictionModel
         {
             _level = level;
 
-            //randomly set the open node
+            //randomly set the open node to left or right
             Random random = new Random();
             _isRightNodeOpen = random.NextDouble() > 0.5;
         }
@@ -49,6 +49,7 @@ namespace PredictionModel
         {
             if(_level > 0)
             {
+                //initialise the left and right node
                 _rightNode = new Node(_level - 1);
                 _rightNode.BuildModel();
                 _leftNode = new Node(_level - 1);
@@ -56,30 +57,31 @@ namespace PredictionModel
             }
             else
             {
+                //Leaf Node => set to true
                 _isLeaf = true;
             }
         }
 
-        public void DisplayBallCount()
-        {
-            throw new NotImplementedException();
-        }
+        
 
         public void PushBall()
         {
             if(_isLeaf)
             {
+                //Leaf Node => Cannot push the ball => hold the ball and increment count
                 _ballCount++;
             }
             else
             {
                 if(_isRightNodeOpen)
                 {
+                    //Right node is open => Push ball in the right node and update the gate to left
                     _rightNode.PushBall();
                     _isRightNodeOpen = false;
                 }
                 else
                 {
+                    //Left node is open => Push ball in the left node and update the gate to right
                     _leftNode.PushBall();
                     _isRightNodeOpen = true;
                 }
@@ -91,11 +93,13 @@ namespace PredictionModel
             List<INode> leafNodes = new List<INode>();
             if (IsLeaf)
             {
+                //Leaf Node => Display count of balls held by leaf node
                 Console.Write(_ballCount);
                 leafNodes.Add(this);
             }
             else
             {
+                //traverse to the right and left to get all the leaf nodes
                 leafNodes.AddRange(_rightNode.GetLeafNodes());
                 leafNodes.AddRange(_leftNode.GetLeafNodes());
             }
